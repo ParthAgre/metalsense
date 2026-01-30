@@ -2,6 +2,9 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime, func
 from sqlalchemy.orm import sessionmaker, declarative_base
+from app.db.base_class import Base  # noqa
+from app.db.models.sample import Sample, Measurement # noqa
+from app.db.models.risk import RiskAssessment  # noqa
 
 # 1. Load environment variables
 load_dotenv()
@@ -14,36 +17,6 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# 3. The MetalSense Schema
-class WaterSample(Base):
-    __tablename__ = "water_samples"
-
-    # Metadata
-    id = Column(Integer, primary_key=True, index=True)
-    location_name = Column(String, index=True)
-    latitude = Column(Float, nullable=True)
-    longitude = Column(Float, nullable=True)
-    sampling_date = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Heavy Metals (mg/L or µg/L) - Based on your research paper
-    conc_arsenic = Column(Float, default=0.0)   # As
-    conc_chromium = Column(Float, default=0.0)  # Cr
-    conc_copper = Column(Float, default=0.0)    # Cu
-    conc_iron = Column(Float, default=0.0)      # Fe
-    conc_manganese = Column(Float, default=0.0) # Mn
-    conc_nickel = Column(Float, default=0.0)    # Ni
-    conc_lead = Column(Float, default=0.0)      # Pb
-    conc_zinc = Column(Float, default=0.0)      # Zn
-    conc_cadmium = Column(Float, default=0.0)   # Cd (Common in heavy metal indices)
-    conc_mercury = Column(Float, default=0.0)   # Hg (Common high risk)
-
-    # Calculated Indices
-    hpi_score = Column(Float, nullable=True)    # Heavy Metal Pollution Index
-    hei_score = Column(Float, nullable=True)    # Heavy Metal Evaluation Index
-    mi_score = Column(Float, nullable=True)     # Metal Index
-    
-    # Risk Assessment
-    risk_level = Column(String, nullable=True)  # e.g., "Safe", "Low", "High"
 
 # 4. Initialization Function
 def init_db():
@@ -51,7 +24,7 @@ def init_db():
     try:
         # This checks the DB and creates tables if they don't exist
         Base.metadata.create_all(bind=engine)
-        print("✅ Success! Table 'water_samples' created.")
+        print("✅ Success! Tables created.")
     except Exception as e:
         print(f"❌ Error: {e}")
 

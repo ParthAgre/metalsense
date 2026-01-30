@@ -1,0 +1,5 @@
+geoalchemy2
+pydantic
+traitlets
+dotenv
+SQLAlchemy
