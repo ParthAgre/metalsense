@@ -1,0 +1,59 @@
+.map-view-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: calc(100vh - 120px);
+}
+
+.map-header {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.map-legend {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.legend-item i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.map-wrapper {
+    flex: 1;
+    overflow: hidden;
+    padding: 0.5rem;
+}
+
+.leaflet-container {
+    background: #0f172a;
+    /* Match theme */
+}
+
+.map-popup h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1e293b;
+}
+
+.map-popup p {
+    margin: 0.2rem 0;
+    font-size: 0.8rem;
+    color: #475569;
+}
+
+/* Dark mode map adjustments if possible, otherwise clean default */
+.leaflet-tile-pane {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
