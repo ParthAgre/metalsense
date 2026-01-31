@@ -1,13 +1,9 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime, func
-from sqlalchemy.orm import sessionmaker, declarative_base
-from app.db.models.sample import Sample, Measurement # noqa
-from app.db.models.risk import RiskAssessment  # noqa
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from app.db.base import Base
-from app.db.models.sample import Sample, Measurement
-from app.db.models.risk import RiskAssessment
-
+from typing import Generator
 
 # 1. Load environment variables
 load_dotenv()
@@ -30,6 +26,18 @@ def init_db():
         print("✅ Success! Tables created.")
     except Exception as e:
         print(f"❌ Error: {e}")
+
+
+def get_db() -> Generator:
+    """
+    Dependency function to yield a database session.
+    Ensures the session is closed after the request is completed.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # Allow running this file directly to test setup
 if __name__ == "__main__":

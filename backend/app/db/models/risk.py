@@ -18,7 +18,7 @@ class RiskAssessment(Base):
     
     # Health Risks
     hazard_index = Column(Float)  # Non-carcinogenic risk [cite: 304]
-    cancer_risk_child = Column(Float)  # Lifetime cancer risk for children [cite: 308, 321]
+    cancer_risk = Column(Float)  # Lifetime cancer risk for children [cite: 308, 321]
     
     # Simplified status for Citizens
     risk_category = Column(String)  # e.g., "Extensively Polluted" [cite: 175]

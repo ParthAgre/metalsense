@@ -1,29 +1,27 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routers import water_sample
-from app.db.database import engine, Base
+from app.db.database import init_db
+from app.api.v1.endpoints import researchers # We will create this next
 
-# Create tables
-Base.metadata.create_all(bind=engine)
+app = FastAPI(title="MetalSense API", version="0.1.0")
 
-app = FastAPI(
-    title="MetalSense API",
-    description="Backend for detecting heavy metal pollution and calculating health risk indices.",
-    version="1.0.0"
-)
+# 1. Initialize Database Tables on Startup
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
-# CORS (Cross-Origin Resource Sharing)
+# 2. CORS Setup (Essential for your React Frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all for hackathon/dev
+    allow_origins=["*"], # In production, replace with your frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include Routers
-app.include_router(water_sample.router)
+# 3. Include Routers
+app.include_router(researchers.router, prefix="/api/v1/researcher", tags=["Researcher"])
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to MetalSense API", "status": "Online"}
+    return {"message": "Welcome to MetalSense API"}

@@ -4,3 +4,4 @@ traitlets
 dotenv
 SQLAlchemy
 psycopg2-binary
+fastapi

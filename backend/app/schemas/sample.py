@@ -18,7 +18,7 @@ class MetalConcentration(BaseModel):
             return v / 1000  # Standardize to mg/L for WHO/BIS comparison
         return v
 
-class Sample(BaseModel):
+class CreateSample(BaseModel):
     latitude: float = Field(..., ge=-90.0, le=90.0)
     longitude: float = Field(..., ge=-180.0, le=180.0)
     timestamp: datetime = Field(default_factory=datetime.now)
@@ -28,7 +28,7 @@ class Sample(BaseModel):
     
     
     @model_validator(mode='after')
-    def check_at_least_one_metal(self) -> 'Sample':
+    def check_at_least_one_metal(self) -> 'CreateSample':
         if not self.measurements:
             raise ValueError("At least one metal measurement is required.")
         return self
