@@ -8,9 +8,10 @@ from typing import Generator
 # 1. Load environment variables
 load_dotenv()
 
+from app.core.config import settings
+
 # 2. Database Connection
-# Ensure your .env file has valid credentials
-DATABASE_URL = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

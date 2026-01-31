@@ -1,7 +1,7 @@
 import time
 from app.db.database import SessionLocal, init_db
-from app.schemas.sample import CreateSample, MetalConcentration
-from app.api.v1.endpoints.researchers import create_sample
+from app.schemas.water_quality import CreateSample, MetalConcentration
+from app.api.v1.researchers import create_sample
 from fastapi import BackgroundTasks
 from app.db.models.risk import RiskAssessment
 import asyncio

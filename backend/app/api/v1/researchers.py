@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from sqlalchemy.orm import Session
 from app.db.database import get_db
-from app.schemas.sample import CreateSample
+from app.schemas.water_quality import CreateSample
 from app.db.models.sample import Sample, Measurement
 from geoalchemy2.elements import WKTElement
 from app.services.tasks import calculate_risk_indices_task

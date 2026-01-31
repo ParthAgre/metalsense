@@ -1,6 +1,6 @@
 import math
 from typing import List, Dict
-from app.services.constants import METAL_STANDARDS, METAL_WEIGHTS, RISK_PARAMS, EXPOSURE_DEFAULTS
+from app.core.constants import METAL_STANDARDS, METAL_WEIGHTS, RISK_PARAMS, EXPOSURE_DEFAULTS
 
 class EnvironmentalCalculator:
     

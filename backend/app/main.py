@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.database import init_db
-from app.api.v1.endpoints import researchers # We will create this next
+from app.api.v1 import researchers
 
 app = FastAPI(title="MetalSense API", version="0.1.0")
 

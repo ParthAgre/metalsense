@@ -1,81 +1,92 @@
 from typing import Dict, TypedDict
 
-# Heavy Metal Standards (mg/L) & Weights
-# Si: Standard Permissible Limit (BIS/WHO)
-# Ii: Ideal Value (Usually 0 for heavy metals)
-# Wi: Unit Weight (1/Si, normalized later if needed, but HPI formula uses strict 1/Si usually)
-# MAC: Maximum Allowable Concentration (used for HEI/MI, often same as Si or slightly higher)
+# ==========================================
+# 1. WATER QUALITY STANDARDS (BIS/WHO)
+# ==========================================
+# Si: Standard Permissible Limit (mg/L)
+# Ii: Ideal Value (mg/L) - Usually 0 for toxics
+# MAC: Maximum Allowable Concentration (mg/L)
+# Bn: Geochemical Background Value (mg/L proxy or mg/kg)
+# ==========================================
 
 class MetalStandard(TypedDict):
-    Si: float  # Permissible Limit
-    Ii: float  # Ideal Value
-    # Wi will be calculated as 1/Si
-    MAC: float # Max Allowable (often same as Si for some indices)
+    Si: float
+    Ii: float
+    MAC: float
+    Bn: float
 
-# Based on user inputs and common standards (BIS 10500 / WHO)
 METAL_STANDARDS: Dict[str, MetalStandard] = {
-    "arsenic":   {"Si": 0.01,  "Ii": 0.0, "MAC": 0.01},  # As
-    "cadmium":   {"Si": 0.003, "Ii": 0.0, "MAC": 0.003}, # Cd
-    "chromium":  {"Si": 0.05,  "Ii": 0.0, "MAC": 0.05},  # Cr
-    "copper":    {"Si": 0.05,  "Ii": 0.0, "MAC": 1.5},   # Cu (BIS: 0.05, WHO: 2.0 - user img says 0.05 BIS)
-    "iron":      {"Si": 0.3,   "Ii": 0.0, "MAC": 0.3},   # Fe
-    "lead":      {"Si": 0.01,  "Ii": 0.0, "MAC": 0.01},  # Pb
-    "manganese": {"Si": 0.1,   "Ii": 0.0, "MAC": 0.3},   # Mn (BIS acceptable 0.3)
-    "mercury":   {"Si": 0.001, "Ii": 0.0, "MAC": 0.001}, # Hg
-    "nickel":    {"Si": 0.02,  "Ii": 0.0, "MAC": 0.02},  # Ni (User img says 0.02)
-    "zinc":      {"Si": 5.0,   "Ii": 0.0, "MAC": 15.0},  # Zn
+    "arsenic":   {"Si": 0.01,  "Ii": 0.0, "MAC": 0.01,  "Bn": 12.70},
+    "cadmium":   {"Si": 0.003, "Ii": 0.0, "MAC": 0.003, "Bn": 0.10},
+    "chromium":  {"Si": 0.05,  "Ii": 0.0, "MAC": 0.05,  "Bn": 67.30},
+    "copper":    {"Si": 0.05,  "Ii": 0.0, "MAC": 1.5,   "Bn": 22.50},
+    "iron":      {"Si": 0.3,   "Ii": 0.0, "MAC": 0.3,   "Bn": 15000.0},
+    "lead":      {"Si": 0.01,  "Ii": 0.0, "MAC": 0.01,  "Bn": 21.00},
+    "manganese": {"Si": 0.1,   "Ii": 0.0, "MAC": 0.3,   "Bn": 500.0},
+    "mercury":   {"Si": 0.001, "Ii": 0.0, "MAC": 0.001, "Bn": 0.02},
+    "nickel":    {"Si": 0.02,  "Ii": 0.0, "MAC": 0.02,  "Bn": 31.00},
+    "zinc":      {"Si": 5.0,   "Ii": 0.0, "MAC": 15.0,  "Bn": 65.40},
 }
 
 # Pre-calculate Weights (Wi = 1 / Si)
 METAL_WEIGHTS = {metal: 1.0 / std["Si"] for metal, std in METAL_STANDARDS.items()}
 
 
-# Health Risk Assessment Constants
+# ==========================================
+# 2. HEALTH RISK PARAMETERS (USEPA/IRIS)
+# ==========================================
 # RfD: Oral Reference Dose (mg/kg/day)
 # CSF: Cancer Slope Factor (mg/kg/day)^-1
-# Source: USEPA Integrated Risk Information System (IRIS)
+# ==========================================
 
 class RiskParams(TypedDict):
     RfD: float
-    CSF: float | None # None if not carcinogenic
+    CSF: float | None
 
 RISK_PARAMS: Dict[str, RiskParams] = {
-    "arsenic":   {"RfD": 3.0E-4, "CSF": 1.5},
-    "cadmium":   {"RfD": 5.0E-4, "CSF": 6.3}, # Inhalation CSF is different, oral often lower/debated, using common proxy
-    "chromium":  {"RfD": 3.0E-3, "CSF": 0.5}, # Cr(VI) is higher risk
-    "copper":    {"RfD": 4.0E-2, "CSF": None},
-    "iron":      {"RfD": 7.0E-1, "CSF": None},
-    "lead":      {"RfD": 3.5E-3, "CSF": 0.0085}, # RfD for Pb is complex, using provisional
-    "manganese": {"RfD": 1.4E-1, "CSF": None},
-    "mercury":   {"RfD": 3.0E-4, "CSF": None},
-    "nickel":    {"RfD": 2.0E-2, "CSF": None}, # heavily dependent on soluble salts
-    "zinc":      {"RfD": 3.0E-1, "CSF": None},
+    "arsenic":   {"RfD": 0.0003, "CSF": 1.5},
+    "cadmium":   {"RfD": 0.0005, "CSF": 6.3},
+    "chromium":  {"RfD": 0.003,  "CSF": 0.5},
+    "copper":    {"RfD": 0.04,   "CSF": None},
+    "iron":      {"RfD": 0.7,    "CSF": None},
+    "lead":      {"RfD": 0.0014, "CSF": 0.0085},
+    "manganese": {"RfD": 0.024,  "CSF": None},
+    "mercury":   {"RfD": 0.0003, "CSF": None},
+    "nickel":    {"RfD": 0.02,   "CSF": None},
+    "zinc":      {"RfD": 0.3,    "CSF": None},
 }
 
-# Exposure Parameters (Defaults)
-class ExposureDefaults(TypedDict):
-    BW: float # Body Weight (kg)
-    IR: float # Ingestion Rate (L/day)
-    EF: int   # Exposure Frequency (days/year)
-    ED: int   # Exposure Duration (years)
-    AT: int   # Averaging Time (days) - Non-Carcinogenic
-    AT_C: int # Averaging Time (days) - Carcinogenic (Lifetime)
 
-EXPOSURE_DEFAULTS = {
+# ==========================================
+# 3. EXPOSURE SCENARIOS (Adult vs Child)
+# ==========================================
+# BW: Body Weight (kg)
+# IR: Ingestion Rate (L/day)
+# EF: Exposure Frequency (days/year)
+# ED: Exposure Duration (years)
+# AT: Averaging Time (days)
+# ==========================================
+
+class ExposureDefaults(TypedDict):
+    BW: float
+    IR: float
+    EF: int
+    ED: int
+    AT: int
+
+EXPOSURE_DEFAULTS: Dict[str, ExposureDefaults] = {
     "adult": {
         "BW": 70.0,
-        "IR": 2.2, # Avg water consumption
-        "EF": 365,
-        "ED": 30,  # 30 years residence
-        "AT": 30 * 365,
-        "AT_C": 70 * 365 # 70 years lifetime expectancy
+        "IR": 2.2,
+        "EF": 350,
+        "ED": 70,
+        "AT": 25550, # 70 years * 365
     },
     "child": {
-        "BW": 15.0, # Approx 3-5 year old
-        "IR": 1.0,
-        "EF": 365,
+        "BW": 15.0,
+        "IR": 1.8,
+        "EF": 350,
         "ED": 6,
-        "AT": 6 * 365,
-        "AT_C": 70 * 365 # Lifetime risk still averaged over 70 years
+        "AT": 2190,  # 6 years * 365
     }
 }
