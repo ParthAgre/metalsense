@@ -12,7 +12,6 @@ def calculate_risk_indices_task(sample_id: int):
     """
     db = SessionLocal()
     try:
-        # 1. Fetch the sample and its measurements
         sample = db.query(Sample).filter(Sample.id == sample_id).first()
         if not sample:
             return
@@ -23,14 +22,17 @@ def calculate_risk_indices_task(sample_id: int):
             "Zn": "zinc", "Cu": "copper", "Fe": "iron", "Mn": "manganese"
         }
 
-        # Update the transformation loop
+        # CRITICAL FIX: Ensure all data is in mg/L before calculation
+        # If your Measurement model doesn't have a 'unit' field, 
+        # ensure your API converted them BEFORE saving to the DB.
         raw_data = {
             name_mapping.get(m.metal, m.metal.lower()): m.concentration 
             for m in sample.measurements
         }
 
+        # DEBUG: Check if Copper is 0.98 or 980
+        print(f"DEBUG: Data sent to calculator: {raw_data}")
 
-        # 3. Perform the Scientific Calculations
         calc = EnvironmentalCalculator()
         hpi_score = calc.calculate_hpi(raw_data)
         hei_score = calc.calculate_hei(raw_data)

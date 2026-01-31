@@ -28,6 +28,7 @@ async def create_sample(
 
         # 2. Create the Measurements (The 'What')
         # Your Pydantic model already normalized these to mg/L
+        print(f"DEBUG: Full Pydantic Payload: {payload.model_dump()}")
         db_measurements = [
             Measurement(
                 sample_id=new_sample.id,
@@ -36,6 +37,7 @@ async def create_sample(
             )
             for m in payload.measurements
         ]
+
         db.add_all(db_measurements)
         
         # 3. Commit the transaction

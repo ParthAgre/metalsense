@@ -11,12 +11,12 @@ class MetalConcentration(BaseModel):
     unit: Literal["mg/L", "µg/L"] = "mg/L"
 
 
-    @field_validator('concentration', mode='after')
-    @classmethod
-    def normalize_units(cls, v: float, info):
-        if info.data.get('unit') == "µg/L":
-            return v / 1000  # Standardize to mg/L for WHO/BIS comparison
-        return v
+    @model_validator(mode='after')
+    def validate_and_normalize(self) -> 'MetalConcentration':
+        if self.unit == "µg/L":
+            # Direct adjustment of the attribute
+            self.concentration = self.concentration / 1000
+        return self
 
 class CreateSample(BaseModel):
     latitude: float = Field(..., ge=-90.0, le=90.0)
