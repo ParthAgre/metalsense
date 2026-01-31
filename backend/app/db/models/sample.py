@@ -2,8 +2,8 @@ from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, Enu
 from sqlalchemy.orm import relationship
 from traitlets import Bool
 from geoalchemy2 import Geography
-from app.db.base_class import Base # Assuming your declarative_base is here
 import enum
+from app.db.base import Base
 
 class SourceType(str, enum.Enum):
     GROUNDWATER = "Groundwater"
@@ -24,6 +24,7 @@ class Sample(Base):
     background_reference = Column(String, default="Average_Shale") # [cite: 89, 90]
 
     measurements = relationship("Measurement", back_populates="sample", cascade="all, delete")
+    assessment = relationship("RiskAssessment", back_populates="sample", uselist=False, cascade="all, delete-orphan")
 
 class Measurement(Base):
     __tablename__ = "measurements"

@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, Enum
+from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship
-from traitlets import Bool
-from app.db.base_class import Base # Assuming your declarative_base is here
+from app.db.base import Base # Assuming your declarative_base is here
+from app.db.models.sample import Sample
 import enum
 
 class RiskAssessment(Base):
@@ -22,6 +22,6 @@ class RiskAssessment(Base):
     
     # Simplified status for Citizens
     risk_category = Column(String)  # e.g., "Extensively Polluted" [cite: 175]
-    is_safe = Column(Bool, default=True) # Binary flag for the "Traffic Light" map
+    is_safe = Column(Boolean, default=True) # Binary flag for the "Traffic Light" map
 
     sample = relationship("Sample", back_populates="assessment")

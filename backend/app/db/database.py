@@ -2,10 +2,12 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime, func
 from sqlalchemy.orm import sessionmaker, declarative_base
-from app.db.base_class import Base  # noqa
 from app.db.models.sample import Sample, Measurement # noqa
 from app.db.models.risk import RiskAssessment  # noqa
-from app.db.models.water_sample import WaterSample
+from app.db.base import Base
+from app.db.models.sample import Sample, Measurement
+from app.db.models.risk import RiskAssessment
+
 
 # 1. Load environment variables
 load_dotenv()

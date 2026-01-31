@@ -3,3 +3,4 @@ pydantic
 traitlets
 dotenv
 SQLAlchemy
+psycopg2-binary
