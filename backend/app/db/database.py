@@ -2,9 +2,12 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime, func
 from sqlalchemy.orm import sessionmaker, declarative_base
-from app.db.base_class import Base  # noqa
 from app.db.models.sample import Sample, Measurement # noqa
 from app.db.models.risk import RiskAssessment  # noqa
+from app.db.base import Base
+from app.db.models.sample import Sample, Measurement
+from app.db.models.risk import RiskAssessment
+
 
 # 1. Load environment variables
 load_dotenv()
@@ -15,7 +18,7 @@ DATABASE_URL = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+
 
 
 # 4. Initialization Function
