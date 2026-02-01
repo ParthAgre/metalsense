@@ -4,6 +4,7 @@ from app.schemas.water_quality import CreateSample, MetalConcentration
 from app.api.v1.researchers import create_sample
 from fastapi import BackgroundTasks
 from app.db.models.risk import RiskAssessment
+from app.db.models.user import User, UserRole
 import asyncio
 
 async def test_full_pipeline():
@@ -28,7 +29,8 @@ async def test_full_pipeline():
     try:
         # 3. Call the route logic
         # Note: In a real test, you'd use TestClient, but this tests the logic directly
-        response = await create_sample(payload=test_data, background_tasks=bg_tasks, db=db)
+        mock_user = User(id=1, email="test@example.com", role=UserRole.researcher, is_active=True)
+        response = await create_sample(payload=test_data, background_tasks=bg_tasks, db=db, current_user=mock_user)
         
         # 4. Manually run the background tasks (since we aren't in a real FastAPI loop)
         for task in bg_tasks.tasks:

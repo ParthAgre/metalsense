@@ -7,3 +7,9 @@ psycopg2-binary
 fastapi
 pydantic-settings
 uvicorn
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+email-validator
+httpx
+pytest

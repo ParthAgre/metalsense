@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.database import init_db
-from app.api.v1 import researchers
+from app.api.v1 import researchers, auth, users
 
 app = FastAPI(title="MetalSense API", version="0.1.0")
 
@@ -21,6 +21,8 @@ app.add_middleware(
 
 # 3. Include Routers
 app.include_router(researchers.router, prefix="/api/v1/researcher", tags=["Researcher"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 
 @app.get("/")
 def read_root():

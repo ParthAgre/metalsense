@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from sqlalchemy.orm import Session
 from app.db.database import get_db
+from app.api import deps
 from app.schemas.water_quality import CreateSample
 from app.db.models.sample import Sample, Measurement
 from geoalchemy2.elements import WKTElement
@@ -12,7 +13,8 @@ router = APIRouter()
 async def create_sample(
     payload: CreateSample, 
     background_tasks: BackgroundTasks, 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(deps.get_current_researcher)
 ):
     try:
         # 1. Create the Sample (The 'Where' and 'When')

@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from traitlets import Bool
 from geoalchemy2 import Geography
 import enum
-from app.db.base import Base
+from app.db.base_class import Base
 
 class SourceType(str, enum.Enum):
     GROUNDWATER = "Groundwater"
