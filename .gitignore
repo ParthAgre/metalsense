@@ -1,0 +1,85 @@
+# ===============================
+# Python bytecode / cache
+# ===============================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ===============================
+# Virtual environments
+# ===============================
+
+.venv
+venv/
+ENV/
+env/
+
+# ===============================
+# Environment variables / secrets
+# ===============================
+.env.*
+!.env.example
+
+# ===============================
+# FastAPI / Uvicorn
+# ===============================
+*.log
+uvicorn.log
+
+# ===============================
+# SQLAlchemy / Databases
+# ===============================
+*.db
+*.sqlite
+*.sqlite3
+
+# ===============================
+# Alembic (migrations)
+# ===============================
+alembic.ini
+alembic/versions/__pycache__/
+
+# ===============================
+# IDEs / Editors
+# ===============================
+.vscode/
+.idea/
+*.iml
+
+# ===============================
+# OS-generated files
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Testing / Coverage
+# ===============================
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ===============================
+# Build / Packaging
+# ===============================
+build/
+dist/
+*.egg-info/
+
+# ===============================
+# Jupyter / Notebooks
+# ===============================
+.ipynb_checkpoints/
+
+# ===============================
+# Docker
+# ===============================
+.env.docker
+docker-compose.override.yml
+
+# ===============================
+# Temporary / Local files
+# ===============================
+tmp/
+temp/
