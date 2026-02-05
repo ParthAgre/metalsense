@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.api import deps
 from app.core import security
-from app.schemas.user import UserCreate, UserRead, UserBase
+from app.schemas.user import UserCreate, UserRead, UserBase, UserUpdatePassword
 from app.db.models.user import User
 
 router = APIRouter()
@@ -32,4 +32,23 @@ def create_user(user: UserCreate, db: Session = Depends(deps.get_db)):
 
 @router.get("/me", response_model=UserRead)
 def read_users_me(current_user: User = Depends(deps.get_current_active_user)):
+    return current_user
+
+@router.post("/change-password", response_model=UserRead)
+def change_password(
+    password_data: UserUpdatePassword,
+    current_user: User = Depends(deps.get_current_active_user),
+    db: Session = Depends(deps.get_db),
+):
+    """
+    Change password for the current user.
+    """
+    if not security.verify_password(password_data.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect password")
+    
+    hashed_password = security.get_password_hash(password_data.new_password)
+    current_user.hashed_password = hashed_password
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
     return current_user

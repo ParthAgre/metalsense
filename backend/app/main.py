@@ -1,14 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from app.db.database import init_db
 from app.api.v1 import researchers, auth, users
 
-app = FastAPI(title="MetalSense API", version="0.1.0")
-
-# 1. Initialize Database Tables on Startup
-@app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 1. Initialize Database Tables on Startup
     init_db()
+    yield
+
+app = FastAPI(title="MetalSense API", version="0.1.0", lifespan=lifespan)
 
 # 2. CORS Setup (Essential for your React Frontend)
 app.add_middleware(

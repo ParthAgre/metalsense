@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional
 from app.db.models.user import UserRole
 
@@ -17,6 +17,9 @@ class UserLogin(BaseModel):
 
 class UserRead(UserBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        from_attributes = True
+class UserUpdatePassword(BaseModel):
+    current_password: str
+    new_password: str
+
