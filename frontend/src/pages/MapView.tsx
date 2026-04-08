@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import axios from 'axios';
 import { mockSamples } from '../services/mockData';
 import L from 'leaflet';
 import './MapView.css';
@@ -19,6 +20,18 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const MapView: React.FC = () => {
+    const [samples, setSamples] = useState<any[]>(mockSamples);
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/v1/researcher/samples')
+            .then(res => {
+                if (res.data && res.data.length > 0) {
+                     setSamples(res.data);
+                }
+            })
+            .catch(err => console.error("Failed to fetch live samples, using mock.", err));
+    }, []);
+
     const center: [number, number] = [23.5937, 78.9629]; // Center of India
 
     const getRiskColor = (risk: string) => {
@@ -47,28 +60,38 @@ const MapView: React.FC = () => {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    {mockSamples.map(sample => (
+                    {samples.map(sample => {
+                        const lat = sample.lat || sample.latitude;
+                        const lng = sample.lng || sample.longitude;
+                        if (!lat || !lng) return null;
+                        
+                        const riskLevel = sample.risk?.risk_category || sample.risk_level || 'Safe';
+                        const hpiScore = sample.risk?.hpi || sample.hpi_score || 0;
+                        const locName = sample.source_type || sample.location_name || 'Sampling Point';
+
+                        return (
                         <React.Fragment key={sample.id}>
-                            <Marker position={[sample.latitude, sample.longitude]}>
+                            <Marker position={[lat, lng]}>
                                 <Popup>
                                     <div className="map-popup">
-                                        <h4>{sample.location_name}</h4>
-                                        <p>Risk: <strong style={{ color: getRiskColor(sample.risk_level) }}>{sample.risk_level}</strong></p>
-                                        <p>HPI Score: {sample.hpi_score}</p>
+                                        <h4>{locName}</h4>
+                                        <p>Risk: <strong style={{ color: getRiskColor(riskLevel) }}>{riskLevel}</strong></p>
+                                        <p>HPI Score: {hpiScore}</p>
                                     </div>
                                 </Popup>
                             </Marker>
                             <Circle
-                                center={[sample.latitude, sample.longitude]}
+                                center={[lat, lng]}
                                 radius={20000}
                                 pathOptions={{
-                                    fillColor: getRiskColor(sample.risk_level),
-                                    color: getRiskColor(sample.risk_level),
+                                    fillColor: getRiskColor(riskLevel),
+                                    color: getRiskColor(riskLevel),
                                     fillOpacity: 0.3
                                 }}
                             />
                         </React.Fragment>
-                    ))}
+                        );
+                    })}
                 </MapContainer>
             </div>
         </div>

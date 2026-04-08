@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from traitlets import Bool
-from geoalchemy2 import Geography
+# Removed geoalchemy2 due to SQLite compatibility
 import enum
 from app.db.base_class import Base
 
@@ -14,8 +14,9 @@ class Sample(Base):
     __tablename__ = "samples"
 
     id = Column(Integer, primary_key=True, index=True)
-    # PostGIS point: SRID 4326 is the standard for WGS84 (Lat/Long)
-    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False)
+    dataset_id = Column(Integer, ForeignKey("datasets.id"), nullable=True)    
+    lat = Column(Float, nullable=False)
+    lng = Column(Float, nullable=False)
     timestamp = Column(DateTime, nullable=False)
     source_type = Column(Enum(SourceType), nullable=False) # e.g., Handpump, River [cite: 152]
     

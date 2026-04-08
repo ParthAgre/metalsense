@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, Download, Filter } from 'lucide-react';
+import { Search, Download, Filter, Upload } from 'lucide-react';
 import { mockSamples } from '../services/mockData';
+import axios from 'axios';
 import './DataLogs.css';
 
 const DataLogs: React.FC = () => {
@@ -16,6 +17,30 @@ const DataLogs: React.FC = () => {
             case 'Low': return 'badge-risk-low';
             case 'Safe': return 'badge-risk-safe';
             default: return '';
+        }
+    };
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                 alert("Please login as a researcher to upload CSV files");
+                 return;
+            }
+            await axios.post('http://127.0.0.1:8000/api/v1/researcher/upload-csv', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            alert('CSV Uploaded and processing started!');
+        } catch(err) {
+            alert('Error uploading CSV. Make sure you are logged in as a Researcher.');
         }
     };
 
@@ -40,7 +65,12 @@ const DataLogs: React.FC = () => {
                         <Filter size={18} />
                         <span>Filter</span>
                     </button>
-                    <button className="action-btn glass primary">
+                    <label className="action-btn glass primary" style={{ cursor: 'pointer' }}>
+                        <Upload size={18} />
+                        <span>Upload CSV</span>
+                        <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileUpload} />
+                    </label>
+                    <button className="action-btn glass">
                         <Download size={18} />
                         <span>Export CSV</span>
                     </button>

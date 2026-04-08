@@ -1,4 +1,4 @@
-from typing import Dict, TypedDict
+from typing import Dict, TypedDict, Optional
 
 # ==========================================
 # 1. WATER QUALITY STANDARDS (BIS/WHO)
@@ -41,7 +41,7 @@ METAL_WEIGHTS = {metal: 1.0 / std["Si"] for metal, std in METAL_STANDARDS.items(
 
 class RiskParams(TypedDict):
     RfD: float
-    CSF: float | None
+    CSF: Optional[float]
 
 RISK_PARAMS: Dict[str, RiskParams] = {
     "arsenic":   {"RfD": 0.0003, "CSF": 1.5},

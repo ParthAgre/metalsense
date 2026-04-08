@@ -34,8 +34,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <AlertTriangle size={20} />
                         <span>Risk Alerts</span>
                     </Link>
+                    <Link to="/education" className={`nav-item ${location.pathname === '/education' ? 'active' : ''}`}>
+                        <Database size={20} />
+                        <span>Education</span>
+                    </Link>
                 </nav>
                 <div className="sidebar-footer">
+                    <Link to="/auth" className={`nav-item ${location.pathname === '/auth' ? 'active' : ''}`}>
+                        <Settings size={20} />
+                        <span>Account/Login</span>
+                    </Link>
                     <Link to="/settings" className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}>
                         <Settings size={20} />
                         <span>Settings</span>

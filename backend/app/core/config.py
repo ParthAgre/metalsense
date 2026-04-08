@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        # Use SQLite for local development without Docker
+        return "sqlite:///./metalsense.db"
 
 settings = Settings()
