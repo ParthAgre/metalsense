@@ -85,33 +85,57 @@ async def upload_csv(
 
     try:
         sample_ids = []
+        # Support flexible column names
+        cols = {c.lower(): c for c in df.columns}
+        lat_col = cols.get('lat') or cols.get('latitude')
+        lng_col = cols.get('lng') or cols.get('longitude') or cols.get('long')
+        time_col = cols.get('timestamp') or cols.get('date') or cols.get('sampling_date')
+        source_col = cols.get('source_type') or cols.get('source')
+        metal_col = cols.get('metal') or cols.get('element')
+        conc_col = cols.get('concentration') or cols.get('value') or cols.get('conc')
+
         for index, row in df.iterrows():
-            # Expecting columns: lat, lng, timestamp, source_type, metal, concentration
-            sample = Sample(
-                dataset_id=dataset.id,
-                lat=row.get('lat', 0.0),
-                lng=row.get('lng', 0.0),
-                timestamp=pd.to_datetime(row.get('timestamp', pd.Timestamp.now())),
-                source_type=row.get('source_type', 'Groundwater'),
-            )
-            db.add(sample)
-            db.flush()
+            try:
+                # Extract coordinates
+                lat_val = float(row.get(lat_col, 0.0)) if lat_col else 0.0
+                lng_val = float(row.get(lng_col, 0.0)) if lng_col else 0.0
+                
+                # Create Sample
+                sample = Sample(
+                    dataset_id=dataset.id,
+                    lat=lat_val,
+                    lng=lng_val,
+                    timestamp=pd.to_datetime(row.get(time_col, pd.Timestamp.now())) if time_col else pd.Timestamp.now(),
+                    source_type=row.get(source_col, 'Groundwater'),
+                )
+                db.add(sample)
+                db.flush()
+                
+                # Create Measurement
+                metal_val = str(row.get(metal_col, 'Unknown')) if metal_col else 'Unknown'
+                conc_val = float(row.get(conc_col, 0.0)) if conc_col else 0.0
+                
+                measurement = Measurement(
+                    sample_id=sample.id,
+                    metal=metal_val,
+                    concentration=conc_val
+                )
+                db.add(measurement)
+                sample_ids.append(sample.id)
+            except Exception as row_err:
+                print(f"Skipping row {index} due to error: {row_err}")
+                continue
             
-            measurement = Measurement(
-                sample_id=sample.id,
-                metal=row.get('metal', 'Unknown'),
-                concentration=float(row.get('concentration', 0.0))
-            )
-            db.add(measurement)
-            sample_ids.append(sample.id)
-            
+        if not sample_ids:
+            raise Exception("No valid rows found in CSV")
+
         dataset.upload_status = "completed"
         db.commit()
         
         for sid in sample_ids:
             background_tasks.add_task(calculate_risk_indices_task, sid)
 
-        return {"status": "Success", "dataset_id": dataset.id, "message": "CSV processed and calculation started."}
+        return {"status": "Success", "dataset_id": dataset.id, "message": f"CSV processed. {len(sample_ids)} samples imported."}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Processing Error: {str(e)}")

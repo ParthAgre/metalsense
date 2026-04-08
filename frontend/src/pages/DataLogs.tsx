@@ -1,14 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Download, Filter, Upload } from 'lucide-react';
-import { mockSamples } from '../services/mockData';
 import axios from 'axios';
 import './DataLogs.css';
 
+interface ApiSample {
+    id: number;
+    lat: number;
+    lng: number;
+    timestamp: string;
+    source_type: string;
+    measurements: { metal: string; concentration: number }[];
+    risk: { hpi: number; risk_category: string };
+}
+
 const DataLogs: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [samples, setSamples] = useState<ApiSample[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const filteredSamples = mockSamples.filter(sample =>
-        sample.location_name.toLowerCase().includes(searchTerm.toLowerCase())
+    const fetchSamples = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:8000/api/v1/researcher/samples', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            });
+            setSamples(response.data);
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchSamples();
+    }, []);
+
+    const filteredSamples = samples.filter(sample =>
+        sample.source_type.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        sample.id.toString().includes(searchTerm)
     );
 
     const getRiskBadgeClass = (risk: string) => {
@@ -32,16 +62,22 @@ const DataLogs: React.FC = () => {
                  alert("Please login as a researcher to upload CSV files");
                  return;
             }
-            await axios.post('http://127.0.0.1:8000/api/v1/researcher/upload-csv', formData, {
+            await axios.post('http://localhost:8000/api/v1/researcher/upload-csv', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
                 }
             });
-            alert('CSV Uploaded and processing started!');
+            alert('CSV Uploaded and processing successfully in the background!');
+            fetchSamples(); // reload dynamic table stats
         } catch(err) {
             alert('Error uploading CSV. Make sure you are logged in as a Researcher.');
         }
+    };
+
+    const getMetalConc = (sample: ApiSample, metalName: string) => {
+        const m = sample.measurements.find(m => m.metal.toLowerCase() === metalName.toLowerCase());
+        return m ? m.concentration : 0;
     };
 
     return (
@@ -82,7 +118,7 @@ const DataLogs: React.FC = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Location</th>
+                            <th>Source</th>
                             <th>Date</th>
                             <th>Arsenic (As)</th>
                             <th>Lead (Pb)</th>
@@ -93,18 +129,19 @@ const DataLogs: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredSamples.map(sample => (
-                            <tr key={sample.id}>
+                        {loading && <tr><td colSpan={9} style={{textAlign: "center"}}>Loading samples...</td></tr>}
+                        {!loading && filteredSamples.map((sample, idx) => (
+                            <tr key={sample.id || idx}>
                                 <td>#{sample.id}</td>
-                                <td className="location-cell">{sample.location_name}</td>
-                                <td>{new Date(sample.sampling_date).toLocaleDateString()}</td>
-                                <td>{sample.conc_arsenic.toFixed(3)}</td>
-                                <td>{sample.conc_lead.toFixed(3)}</td>
-                                <td>{sample.conc_mercury.toFixed(4)}</td>
-                                <td className="weight-bold">{sample.hpi_score.toFixed(1)}</td>
+                                <td className="location-cell">{sample.source_type}</td>
+                                <td>{new Date(sample.timestamp).toLocaleDateString()}</td>
+                                <td>{getMetalConc(sample, 'Arsenic').toFixed(3)}</td>
+                                <td>{getMetalConc(sample, 'Lead').toFixed(3)}</td>
+                                <td>{getMetalConc(sample, 'Mercury').toFixed(4)}</td>
+                                <td className="weight-bold">{sample.risk?.hpi ? sample.risk.hpi.toFixed(1) : 'Processing'}</td>
                                 <td>
-                                    <span className={`badge ${getRiskBadgeClass(sample.risk_level)}`}>
-                                        {sample.risk_level}
+                                    <span className={`badge ${getRiskBadgeClass(sample.risk?.risk_category || 'Safe')}`}>
+                                        {sample.risk?.risk_category || 'Safe'}
                                     </span>
                                 </td>
                                 <td>

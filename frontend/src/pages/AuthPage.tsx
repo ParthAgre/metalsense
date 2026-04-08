@@ -30,8 +30,9 @@ export default function AuthPage() {
         alert('Registered successfully! Please login.');
         setView('login');
       }
-    } catch (err) {
-      alert('Authentication error. Please check your credentials.');
+    } catch (err: any) {
+      const msg = err.response?.data?.detail || 'Authentication error. Please check your credentials.';
+      alert(typeof msg === 'string' ? msg : JSON.stringify(msg));
     }
   };
 

@@ -19,7 +19,7 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
-        # Use SQLite for local development without Docker
+        # Use SQLite temporarily until user decides on native Postgres vs MySQL
         return "sqlite:///./metalsense.db"
 
 settings = Settings()
