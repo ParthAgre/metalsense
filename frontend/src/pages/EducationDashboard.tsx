@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BookOpen } from 'lucide-react';
-import './DataLogs.css';
-import './AuthPage.css'; // For .card class which is now glassmorphic
+import { BookOpen, ShieldCheck, Microscope, Zap, Info, Loader2, ExternalLink } from 'lucide-react';
+import './EducationDashboard.css';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
+const API_BASE_URL = 'http://localhost:8000/api/v1';
 
 export default function EducationDashboard() {
   const [metals, setMetals] = useState<any[]>([]);
   const [materials, setMaterials] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -19,55 +19,78 @@ export default function EducationDashboard() {
         setMaterials(matRes.data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
     fetchData();
   }, []);
 
-  return (
-    <div className="page-container page-enter">
-      <header className="page-header">
-        <div>
-          <h1 className="page-title">Education & Insights</h1>
-          <p className="page-subtitle">Understand Heavy Metals and Health Factors</p>
+  const handleLearnMore = (metalName: string) => {
+    const url = `https://en.wikipedia.org/wiki/${metalName}`;
+    window.open(url, '_blank');
+  };
+
+  if (loading) {
+    return (
+        <div className="education-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+            <Loader2 className="animate-spin" size={48} color="var(--primary)" />
         </div>
-      </header>
+    );
+  }
+
+  return (
+    <div className="education-container animate-fade-in">
+      <section className="education-hero glass">
+        <Microscope size={48} color="var(--primary)" style={{ marginBottom: '1rem' }} />
+        <h2>Education & Health Insights</h2>
+        <p>Understanding the impact of heavy metal contaminants on environmental and human health.</p>
+      </section>
       
-      <div className="card" style={{ marginBottom: '20px' }}>
-        <h3><BookOpen size={20} style={{marginRight: '8px', verticalAlign: 'middle'}}/> Heavy Metal Directory</h3>
-        <table className="data-table" style={{ marginTop: '15px' }}>
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Name</th>
-              <th>Standard Limit (mg/L)</th>
-              <th>Health Impact</th>
-            </tr>
-          </thead>
-          <tbody>
-            {metals.map((m) => (
-              <tr key={m.id}>
-                <td style={{ fontWeight: 'bold' }}>{m.symbol}</td>
-                <td>{m.name}</td>
-                <td>{m.standard_limit}</td>
-                <td>{m.health_effects}</td>
-              </tr>
-            ))}
-            {metals.length === 0 && <tr><td colSpan={4}>Loading metals...</td></tr>}
-          </tbody>
-        </table>
+      <div className="section-header" style={{ marginTop: '2rem' }}>
+        <h3><Zap size={20} style={{marginRight: '8px', verticalAlign: 'middle', color: '#fbbf24'}}/> Heavy Metal Directory</h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Permissible limits and physiological impacts</p>
       </div>
 
-      <div className="card">
-        <h3>Learning Materials</h3>
-        <ul style={{ listStyleType: 'none', padding: 0, marginTop: '15px' }}>
-         {materials.map(mat => (
-             <li key={mat.id} style={{ padding: '10px', borderBottom: '1px solid #1e293b' }}>
-                <h4 style={{ color: '#38bdf8' }}>{mat.title}</h4>
-                <p style={{ marginTop: '5px', color: '#94a3b8' }}>{mat.content_markdown}</p>
-             </li>
-         ))}
-        </ul>
+      <div className="education-grid">
+        {metals.map((m) => (
+          <div key={m.id} className="metal-card glass">
+            <div className="metal-symbol">{m.symbol}</div>
+            <h4 style={{ fontSize: '1.2rem', margin: '0.5rem 0' }}>{m.name}</h4>
+            <div className="metal-limit">
+              <ShieldCheck size={14} />
+              Standard Limit: <span className="limit-tag">{m.standard_limit} mg/L</span>
+            </div>
+            <div className="impact-list">
+              <p><strong>Health Impact:</strong></p>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{m.health_effects}</p>
+            </div>
+            <button className="view-btn" onClick={() => handleLearnMore(m.name)}>
+                Understand More <ExternalLink size={12} style={{ marginLeft: '4px' }} />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="learning-section">
+        <div className="section-header" style={{ marginBottom: '1.5rem' }}>
+            <h3><BookOpen size={20} style={{marginRight: '8px', verticalAlign: 'middle', color: 'var(--primary)'}}/> Knowledge Base</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Articles and research snippets</p>
+        </div>
+        
+        <div className="materials-list">
+          {materials.map(mat => (
+              <div key={mat.id} className="material-card glass animate-fade-in">
+                <div className="material-icon">
+                    <Info size={24} />
+                </div>
+                <div className="material-info">
+                    <h4>{mat.title}</h4>
+                    <p>{mat.content_markdown}</p>
+                </div>
+              </div>
+          ))}
+        </div>
       </div>
     </div>
   );

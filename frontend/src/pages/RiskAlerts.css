@@ -1,168 +1,186 @@
 .risk-alerts-container {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .alerts-header h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
 }
 
 .alerts-header p {
+    font-size: 0.85rem;
     color: var(--text-muted);
 }
 
 .alerts-content {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 2rem;
 }
 
 .alert-section {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .section-title {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .section-title.critical {
-    color: var(--accent-red);
+    color: #f87171;
 }
 
 .section-title.warning {
-    color: var(--accent-orange);
+    color: #fbbf24;
 }
 
 .section-title h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .alert-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
 }
 
 .alert-card {
-    padding: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
     position: relative;
-    overflow: hidden;
+    background: #1e293b;
 }
 
-.alert-card.high::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--accent-red);
+.alert-card.high {
+    border-left: 3px solid var(--accent-red);
 }
 
-.alert-card.low::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--accent-orange);
+.alert-card.low {
+    border-left: 3px solid var(--accent-orange);
 }
 
 .alert-badge {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 800;
-    padding: 0.25rem 0.5rem;
+    padding: 0.15rem 0.4rem;
     border-radius: 4px;
-    width: fit-content;
     margin-bottom: 0.75rem;
+    width: fit-content;
+    text-transform: uppercase;
 }
 
 .high .alert-badge {
-    background: var(--accent-red);
-    color: white;
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .low .alert-badge {
-    background: var(--accent-orange);
-    color: white;
+    background: rgba(245, 158, 11, 0.1);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .alert-card h4 {
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.alert-region {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
 .alert-desc {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     line-height: 1.6;
-    margin-bottom: 1.5rem;
+    margin: 1rem 0;
 }
 
 .alert-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
 }
 
 .risk-val {
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: var(--text-main);
 }
 
 .safety-btn {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
+    background: #1e293b;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--text-main);
     border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .safety-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #334155;
+    border-color: var(--primary);
 }
 
 .safety-tips {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    padding: 1.5rem;
+    background: #111827;
+    border: 1px solid var(--border);
 }
 
 .tips-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.tips-header h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .tips-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .tips-list li {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.75rem;
     color: var(--text-muted);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
 }
 
 .success-icon {
     color: var(--accent-green);
     flex-shrink: 0;
+    margin-top: 2px;
 }
 
 @media (max-width: 768px) {

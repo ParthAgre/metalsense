@@ -13,3 +13,4 @@ class Dataset(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     uploader = relationship("User", backref="datasets")
+    samples = relationship("Sample", back_populates="dataset", cascade="all, delete-orphan")

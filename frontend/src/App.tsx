@@ -6,6 +6,7 @@ import DataLogs from './pages/DataLogs';
 import RiskAlerts from './pages/RiskAlerts';
 import Settings from './pages/Settings';
 import AuthPage from './pages/AuthPage';
+import ManageUploads from './pages/ManageUploads';
 import EducationDashboard from './pages/EducationDashboard';
 import './index.css';
 
@@ -25,7 +26,10 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
 };
 
 const HomeRoute = () => {
+  const token = localStorage.getItem('token');
   const role = localStorage.getItem('role') || 'citizen';
+  
+  if (!token) return <Navigate to="/auth" replace />;
   return role === 'researcher' ? <Dashboard /> : <Navigate to="/map" replace />;
 };
 
@@ -45,6 +49,11 @@ function App() {
                 <Route path="/data" element={
                   <ProtectedRoute allowedRoles={['researcher']}>
                     <DataLogs />
+                  </ProtectedRoute>
+                } />
+                <Route path="/manage-uploads" element={
+                  <ProtectedRoute allowedRoles={['researcher']}>
+                    <ManageUploads />
                   </ProtectedRoute>
                 } />
                 <Route path="/settings" element={<Settings />} />

@@ -1,6 +1,7 @@
-import React from 'react';
-import { LayoutDashboard, Map as MapIcon, Database, AlertTriangle, Settings, Menu, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LayoutDashboard, Map as MapIcon, Database, AlertTriangle, Settings, Menu, LogOut, BookOpen, User as UserIcon } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Layout.css';
 
 interface LayoutProps {
@@ -11,11 +12,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const role = localStorage.getItem('role') || 'citizen';
+    const [userName, setUserName] = useState('');
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    const response = await axios.get('http://localhost:8000/api/v1/users/me', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setUserName(response.data.full_name);
+                }
+            } catch (err) {
+                console.error("Failed to fetch user", err);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         navigate('/auth');
+    };
+
+    const getInitials = (name: string) => {
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     };
 
     return (
@@ -47,12 +70,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <span>Risk Alerts</span>
                     </Link>
                     <Link to="/education" className={`nav-item ${location.pathname === '/education' ? 'active' : ''}`}>
-                        <Database size={20} />
+                        <BookOpen size={20} />
                         <span>Education</span>
                     </Link>
                 </nav>
                 <div className="sidebar-footer">
-                    <button onClick={handleLogout} className="nav-item" style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', color: 'var(--text-main)', cursor: 'pointer', outline: 'none' }}>
+                    <button onClick={handleLogout} className="nav-item logout-btn" style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', outline: 'none' }}>
                         <LogOut size={20} />
                         <span>Sign Out</span>
                     </button>
@@ -69,10 +92,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <Menu size={24} />
                     </button>
                     <div className="header-search">
-                        <input type="text" placeholder="Search locations..." className="glass" />
+                        {/* Search removed as requested */}
                     </div>
                     <div className="header-profile">
-                        <div className="profile-img"></div>
+                        <div className="profile-img-circle">
+                            {userName ? getInitials(userName) : <UserIcon size={20} />}
+                        </div>
                     </div>
                 </header>
                 <div className="page-content">
