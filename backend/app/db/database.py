@@ -13,7 +13,10 @@ from app.core.config import settings
 # 2. Database Connection
 DATABASE_URL = settings.DATABASE_URL
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL, 
+    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -22,12 +25,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def init_db():
     print("⏳ Connecting to database...")
     try:
-        # This checks the DB and creates tables if they don't exist
-        # Make sure PostGIS is enabled
-        with engine.connect() as connection:
-            connection.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
-            connection.commit()
-            
         Base.metadata.create_all(bind=engine)
         print("✅ Success! Tables created.")
     except Exception as e:

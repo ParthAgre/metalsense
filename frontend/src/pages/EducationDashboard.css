@@ -1,0 +1,115 @@
+.education-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.education-hero {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    background: #111827;
+    border: 1px solid var(--border);
+}
+
+.education-hero h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.education-hero p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.education-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.metal-card {
+    padding: 1.25rem;
+    background: #1e293b;
+    border: 1px solid var(--border);
+}
+
+.metal-card:hover {
+    border-color: var(--primary);
+}
+
+.metal-symbol {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.metal-limit {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.limit-tag {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text-main);
+}
+
+.impact-list {
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.learning-section {
+    margin-top: 1rem;
+}
+
+.materials-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.material-card {
+    padding: 1.25rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    background: #1e293b;
+    border: 1px solid var(--border);
+}
+
+.material-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.material-info h4 {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.material-info p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}

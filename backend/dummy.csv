@@ -1,0 +1,3 @@
+lat,lng,timestamp,source_type,metal,concentration
+23.5,78.9,2026-04-08 12:00:00,Groundwater,Arsenic,0.05
+24.1,79.2,2026-04-08 13:00:00,Surface Water,Lead,0.02
