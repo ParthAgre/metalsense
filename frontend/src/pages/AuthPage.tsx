@@ -79,6 +79,31 @@ export default function AuthPage() {
             {view === 'login' ? 'Secure Login' : 'Create Account'}
           </button>
         </form>
+
+        {view === 'login' && (
+          <div className="demo-credentials" style={{ 
+            marginTop: '2rem', 
+            padding: '1rem', 
+            borderRadius: '10px', 
+            background: 'rgba(255, 255, 255, 0.03)', 
+            border: '1px solid var(--border)',
+            fontSize: '0.85rem'
+          }}>
+            <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '1.2rem' }}>💡</span> Demo Access
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              <div>
+                <p style={{ color: 'var(--text-main)', fontWeight: 'bold', marginBottom: '2px' }}>Researcher (Full Access + Uploads)</p>
+                <code style={{ background: 'rgba(0,0,0,0.2)', padding: '2px 4px', borderRadius: '4px' }}>researcher@metalsense.com</code> / <code>password123</code>
+              </div>
+              <div>
+                <p style={{ color: 'var(--text-muted)', fontWeight: 'bold', marginBottom: '2px' }}>Citizen (Public Mapping View Only)</p>
+                <code style={{ background: 'rgba(0,0,0,0.2)', padding: '2px 4px', borderRadius: '4px' }}>citizen@metalsense.com</code> / <code>password123</code>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
