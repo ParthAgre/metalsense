@@ -13,22 +13,18 @@ from app.core.config import settings
 # 2. Database Connection
 DATABASE_URL = settings.DATABASE_URL
 
-engine = create_engine(
-    DATABASE_URL, 
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-)
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 
-# 4. Initialization Function
 def init_db():
-    print("⏳ Connecting to database...")
+    print("Connecting to database...")
     try:
         Base.metadata.create_all(bind=engine)
-        print("✅ Success! Tables created.")
+        print("Success! Tables created.")
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
 
 
 def get_db() -> Generator:

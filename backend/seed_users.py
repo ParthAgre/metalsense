@@ -6,33 +6,32 @@ from app.core import security
 def seed_users():
     db: Session = SessionLocal()
     try:
-        citizen_pwd = security.get_password_hash("password")
-        researcher_pwd = security.get_password_hash("password")
+        common_pwd = security.get_password_hash("password123")
         
-        citizen_user = db.query(User).filter(User.email == "citizen1@example.com").first()
+        citizen_user = db.query(User).filter(User.email == "citizen@metalsense.com").first()
         if not citizen_user:
             citizen_user = User(
-                email="citizen1@example.com",
-                hashed_password=citizen_pwd,
-                full_name="citizen1",
+                email="citizen@metalsense.com",
+                hashed_password=common_pwd,
+                full_name="Standard Citizen",
                 role=UserRole.citizen,
                 is_active=True
             )
             db.add(citizen_user)
 
-        res_user = db.query(User).filter(User.email == "researcher1@example.com").first()
+        res_user = db.query(User).filter(User.email == "researcher@metalsense.com").first()
         if not res_user:
             res_user = User(
-                email="researcher1@example.com",
-                hashed_password=researcher_pwd,
-                full_name="researcher1",
+                email="researcher@metalsense.com",
+                hashed_password=common_pwd,
+                full_name="Lead Researcher",
                 role=UserRole.researcher,
                 is_active=True
             )
             db.add(res_user)
             
         db.commit()
-        print("Users citizen1 and researcher1 created successfully!")
+        print("Demo accounts citizen@metalsense.com and researcher@metalsense.com created successfully!")
     except Exception as e:
         db.rollback()
         print(f"Error seeding users: {e}")
